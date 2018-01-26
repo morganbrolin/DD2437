@@ -26,7 +26,7 @@ def generate_data(mean,cov,y,size):
 
 
 def create_data(mean1,cov1,y1,\
- 				mean2, cov2,y2,size):
+ 		mean2, cov2,y2,size):
 
 	x1,t1 = generate_data(mean1,cov1,y1,size)
 	x2,t2 = generate_data(mean2,cov2,y2,size)
@@ -57,7 +57,16 @@ def blearning(data, T, W, eta, iterations):
 		W = W + Wdelta
 		#print(Wdelta)
 	return W, Wdelta
+
+
 def seqlearning(data, T, W, eta, iterations):
+    for i in range(len(data[1,:])):
+        for _ in range(iterations):
+            Wdelta = -eta*((W*data[:,i]-T[0,i])*np.transpose(data[:,i]))
+            W = W + Wdelta
+            
+    return W, Wdelta
+		
 def main():
 
 	dataShuf,T,W = (create_data([0, 0] , [[1, 0], [0, 1]] , 1, [5, 5], [[1, 0], [0, 1]], -1, 100))
