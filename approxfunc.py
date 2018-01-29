@@ -73,7 +73,7 @@ def zedLoop(x,y):
     for i in range (len(x[0])):
         returnVector = []
         for j in range (len(y)):
-            returnVector.append(zed(x[i][j],y[j][i]))
+            returnVector.append(zed(x[j][i],y[j][i]))
             #returnVector.append(x[j])
         if firstFlag==1:
             returnMatrix = np.matrix(returnVector)
@@ -139,20 +139,24 @@ def batch_learning(data, T, W1, W2):
     sigmoid_prime_f = np.vectorize(sigmoid_prime)
 
 def weight_update(delta_O,delta_H,X,H,etha):
-    delta_W1 = -etha*delta_H*np.transpose(X)
-    delta_W2 = -etha*delta_O*np.transpose(H)
+    delta_W1 = -delta_H*np.transpose(X)
+    delta_W2 = -delta_O*np.transpose(H)
     return delta_W1,delta_W2
     
 
 def iteration(X,T,W1,W2,etha):
+    delta = 0
     for x in range(1,10):
-        for x in range(1,10):
+        for x in range(1,300):
                 
             H_star,H,O_star,O,sigmoid_prime_O_star,sigmoid_prime_H_star,H = forward_pass(X,W1,W2)
             delta_O,delta_H = backpropagation(H_star,H,O_star,O ,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2)
             delta_W1,delta_W2 =  weight_update(delta_O,delta_H,X,H,etha)
             W1 = W1 + delta_W1*etha
             W2 = W2 + delta_W2*etha
+            delta = delta_W1
+        #print(W1[0])
+        print(delta)
     return O
 
 def main():
@@ -162,23 +166,32 @@ def main():
     xx,yy =np.meshgrid(x,y, sparse=False)
     z2 = (np.exp(-(xx**2+yy**2)/10)-0.5)
     T = np.reshape(z2,(1,(21*21)))
-    Patterns = np.r_[np.reshape(xx,(1,(21*21))),np.reshape(yy,(1,(21*21)))] 
-    etha = 0.001
+    Patterns = np.r_[np.reshape((xx),(1,(21*21))),np.reshape(yy,(1,(21*21)))] 
+    etha = 0.0005
     input_dimension = 2
     data = Patterns
-
-    HiddenLayerNodes = 3
+    HiddenLayerNodes = 20
+    #it seems you need more 20 to get a good circle
     W1, W2 = initialize_weights(HiddenLayerNodes,input_dimension )
 
     O = iteration(data,T,W1,W2,etha)
 
+
     zz = np.reshape(O,(21,21))
-    h = plt.contourf(xx,yy,np.array(zz))
+    """
+    print("space\n")
+    print(zz[0])
+    print("space\n")
+    print(z2[0])
+    """
+    print("O\n")
+    print(O)
+    print("T\n")
+    print(T)
+    plt.contourf(xx,yy,np.array(zz))
+    #plt.contourf(xx,yy,z2)
     plt.show()
-    
     return
-
-
 main()    
     
     
