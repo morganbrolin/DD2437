@@ -121,8 +121,8 @@ def batch_learning(data, T, W1, W2):
     sigmoid_prime_f = np.vectorize(sigmoid_prime)
 
 def weight_update(delta_O,delta_H,X,H,etha):
-    delta_W1 = -etha*delta_H*np.transpose(X)
-    delta_W2 = -etha*delta_O*np.transpose(H)
+    delta_W1 = -delta_H*np.transpose(X)
+    delta_W2 = -delta_O*np.transpose(H)
     return delta_W1,delta_W2
     
 
