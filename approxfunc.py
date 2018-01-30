@@ -144,10 +144,10 @@ def weight_update(delta_O,delta_H,X,H,etha):
     return delta_W1,delta_W2
     
 
-def iteration(X,T,W1,W2,etha):
+def iteration(X,T,W1,W2,etha,iterations):
     delta = 0
-    for x in range(1,10):
-        for x in range(1,300):
+    for _ in range(1,10):
+        for _ in range(1,1000):
                 
             H_star,H,O_star,O,sigmoid_prime_O_star,sigmoid_prime_H_star,H = forward_pass(X,W1,W2)
             delta_O,delta_H = backpropagation(H_star,H,O_star,O ,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2)
@@ -167,14 +167,15 @@ def main():
     z2 = (np.exp(-(xx**2+yy**2)/10)-0.5)
     T = np.reshape(z2,(1,(21*21)))
     Patterns = np.r_[np.reshape((xx),(1,(21*21))),np.reshape(yy,(1,(21*21)))] 
-    etha = 0.0005
+    etha = 0.00001
+    iterations = 10000
     input_dimension = 2
     data = Patterns
     HiddenLayerNodes = 20
     #it seems you need more 20 to get a good circle
     W1, W2 = initialize_weights(HiddenLayerNodes,input_dimension )
 
-    O = iteration(data,T,W1,W2,etha)
+    O = iteration(data,T,W1,W2,etha,iterations)
 
 
     zz = np.reshape(O,(21,21))
