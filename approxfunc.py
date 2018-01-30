@@ -169,9 +169,10 @@ def main():
     Patterns = np.r_[np.reshape((xx),(1,(21*21))),np.reshape(yy,(1,(21*21)))] 
     etha = 0.00001
     iterations = 10000
+    # actually its iterations*10 iterations but i want to measure the speed 
     input_dimension = 2
     data = Patterns
-    HiddenLayerNodes = 20
+    HiddenLayerNodes = 30
     #it seems you need more 20 to get a good circle
     W1, W2 = initialize_weights(HiddenLayerNodes,input_dimension )
 
