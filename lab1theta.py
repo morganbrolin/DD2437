@@ -127,8 +127,9 @@ def weight_update(delta_O,delta_H,X,H,etha):
     
 
 def iteration(X,T,W1,W2,size,etha):
+    O = 0
     for x in range(1,10):
-        for x in range(1,100):
+        for x in range(1,10):
                 
             H_star,H,O_star,O,sigmoid_prime_O_star,sigmoid_prime_H_star,H = forward_pass(X,W1,W2,size)
             delta_O,delta_H = backpropagation(H_star,H,O_star,O ,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2)
@@ -137,19 +138,20 @@ def iteration(X,T,W1,W2,size,etha):
             W2 = W2 + delta_W2*etha
 
         #print(O)
-    return W1
+    print(O)
+    return W1,O
 
 def main():
     mean1 = [0, 0]
     cov1 = [[1, 0], [0, 1]]
-    mean2 = [2, 2]
+    mean2 = [2,2]
     cov2 = [[1, 0], [0, 1]]
-    etha = 0.0001
+    etha = 0.01
     #the real size is size*2
     size = 100
     y1 = 1
     y2 = -1
-    HiddenLayerNodes = 10
+    HiddenLayerNodes = 1
 
     data,T = create_data(mean1,cov1,y1,\
          mean2, cov2,y2,size) 
@@ -157,15 +159,21 @@ def main():
     #print("W1")
     #print(W1)
 
-    W1 = iteration(data,T,W1,W2,size,etha)
-    print(W1)
+    W1, O = iteration(data,T,W1,W2,size,etha)
+    print("Target")
+    print(((T-O)>0.7).sum()/size*2/100)
     for x in range(W1.shape[0]):
         W01 = W1.item((x, 0))
         W02 = W1.item((x, 1))
         W00 = W1.item((x, 2))
-        print(W01)
+        #a = W01
+        #b = W02
+        #c = W00
+        #y = (-c-ax)/b x = 0 ->  y = -c/b
+        #x = -c/a if y = 0 
 
         plt.plot([0,-W00/W02],[-W00/W01,0])
+        #plt.plot([5,-(W00+5)/W02],[-(W00+5)/W01,5])
     plt.show()
     return
     
