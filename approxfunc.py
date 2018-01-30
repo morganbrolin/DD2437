@@ -147,7 +147,7 @@ def weight_update(delta_O,delta_H,X,H,etha):
 def iteration(X,T,W1,W2,etha,iterations):
     delta = 0
     for _ in range(1,10):
-        for _ in range(1,1000):
+        for _ in range(1,iterations):
                 
             H_star,H,O_star,O,sigmoid_prime_O_star,sigmoid_prime_H_star,H = forward_pass(X,W1,W2)
             delta_O,delta_H = backpropagation(H_star,H,O_star,O ,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2)
