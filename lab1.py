@@ -40,7 +40,7 @@ def create_data(mean1,cov1,y1,\
 	with open('x1.pickle', 'rb') as f:
 	
 		x1 = (pickle.load(f))  
-	plotdata()
+	#plotdata()
 	w = np.random.normal(0, 1, 3)
 
 	return data, T, np.matrix(w)
@@ -91,7 +91,7 @@ def seqlearning(data, T, W, eta, iterations):
         for i in range(len((data[1,:][0]).tolist()[0])):
             Wdelta = -eta*((W*data[:,i]-T[0,i])*np.transpose(data[:,i]))
             W = W + Wdelta
-        #plt.plot([itera-1,itera],[old,((step_f(W*data)-(step_f(T))!=0).sum()/200)],c="b")
+        plt.plot([itera-1,itera],[old,((step_f(W*data)-(step_f(T))!=0).sum()/200)],c="b")
         old = ((step_f(W*data)-(step_f(T))!=0).sum()/200)
     return W, Wdelta
 
@@ -111,17 +111,17 @@ def main():
 
 	#dataShuf,T,W11 = (create_data([0, 0] , [[1, 0], [0, 1]] , 1, [5, 5], [[1, 0], [0, 1]], -1, 100))
 	#dataShuf,T,W22 = (create_data([0, 0] , [[1, 0], [0, 1]] , 1, [5, 5], [[1, 0], [0, 1]], -1, 100))
-	#dataShuf,T,W33 = (create_data([0, 0] , [[1, 0], [0, 1]] , 1, [5, 5], [[1, 0], [0, 1]], -1, 100))
+	dataShuf,T,W33 = (create_data([0, 0] , [[1, 0], [0, 1]] , 1, [5, 5], [[1, 0], [0, 1]], -1, 100))
 	dataShuf,T,W44 = (create_data([0, 0] , [[1, 0], [0, 1]] , 1, [5, 5], [[1, 0], [0, 1]], -1, 100))
-	#W3 , Wdelta3 = step_blearning(dataShuf, T, W11, 0.0003, 30)
-	#W2 , Wdelta2 =  seqlearning_step(dataShuf, T, W22, 0.0003, 30)
-	#W4 , Wdelta4 = blearning(dataShuf, T, W33, 0.0003, 30)
-	W1 , Wdelta1 = seqlearning(dataShuf, T, W44, 0.0003, 30)
+	#W3 , Wdelta3 = step_blearning(dataShuf, T, W11, 0.0003, 10)
+	#W2 , Wdelta2 =  seqlearning_step(dataShuf, T, W22, 0.01, 10)
+	W4 , Wdelta4 = blearning(dataShuf, T, W33, 0.0003, 10)
+	W1 , Wdelta1 = seqlearning(dataShuf, T, W44, 0.01, 10)
 
 
 	#print(W*dataShuf)
 	W = W1.tolist()
-	plt.plot([0,-W[0][2]/W[0][1]],[-W[0][2]/W[0][0],0])
+	#plt.plot([0,-W[0][2]/W[0][1]],[-W[0][2]/W[0][0],0])
 	plt.show()
 
 
