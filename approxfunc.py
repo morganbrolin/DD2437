@@ -99,19 +99,20 @@ def initialize_weights(n, input_dimension, ):
          W1 = np.r_[W1,np.matrix(np.random.normal(0,1,input_dimension))]
          #W1 = np.r_[W1,np.matrix(np.random.normal(0,1,n+1))]
          #if you want bias in second layer
-    W2 = np.matrix(np.random.normal(0,1,n))
+    W2 = np.matrix(np.random.normal(0,1,n+1))
 
     return W1, W2
 
 
-def forward_pass(data,W1,W2):
-
-
+def forward_pass(data,W1,W2,size):
+    bias = [1 for i in range(size)]
+    bias = (np.matrix(bias))
     sigmoid_f = np.vectorize(sigmoid)
     sigmoid_prime_f = np.vectorize(sigmoid_prime)
     H_star = W1*data
+    H_star = np.r_[H_star,bias]
     H = sigmoid_f(H_star)
-    #H = np.r_[H,bias]
+    
     # remove this comment if you want bias in second layer
     O_star = W2*H
     O = sigmoid_f(O_star)
@@ -124,11 +125,15 @@ def forward_pass(data,W1,W2):
     
     
     
-def backpropagation(H_star,H,O_star,O,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2):
+def backpropagation(H_star,H,O_star,O,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2,HiddenLayerNodes):
 
     delta_O = np.multiply((O-T),(sigmoid_prime_O_star))
     placeHolder = (np.transpose(W2)*delta_O)
     delta_H = np.multiply(placeHolder,sigmoid_prime_H_star)
+    delta_H = np.array(delta_H)
+
+    delta_H = np.delete(delta_H, HiddenLayerNodes,axis = 0)
+
     return delta_O,delta_H
     
     
@@ -139,18 +144,18 @@ def batch_learning(data, T, W1, W2):
     sigmoid_prime_f = np.vectorize(sigmoid_prime)
 
 def weight_update(delta_O,delta_H,X,H,etha):
-    delta_W1 = -delta_H*np.transpose(X)
+    delta_W1 = -np.matrix(delta_H)*np.matrix(np.transpose(X))
     delta_W2 = -delta_O*np.transpose(H)
     return delta_W1,delta_W2
     
 
-def iteration(X,T,W1,W2,etha,iterations):
+def iteration(X,T,W1,W2,etha,HiddenLayerNodes,size):
     delta = 0
-    for _ in range(1,10):
-        for _ in range(1,iterations):
+    for x in range(1,10):
+        for x in range(1,100):
                 
-            H_star,H,O_star,O,sigmoid_prime_O_star,sigmoid_prime_H_star,H = forward_pass(X,W1,W2)
-            delta_O,delta_H = backpropagation(H_star,H,O_star,O ,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2)
+            H_star,H,O_star,O,sigmoid_prime_O_star,sigmoid_prime_H_star,H = forward_pass(X,W1,W2,size)
+            delta_O,delta_H = backpropagation(H_star,H,O_star,O ,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2,HiddenLayerNodes)
             delta_W1,delta_W2 =  weight_update(delta_O,delta_H,X,H,etha)
             W1 = W1 + delta_W1*etha
             W2 = W2 + delta_W2*etha
@@ -167,16 +172,16 @@ def main():
     z2 = (np.exp(-(xx**2+yy**2)/10)-0.5)
     T = np.reshape(z2,(1,(21*21)))
     Patterns = np.r_[np.reshape((xx),(1,(21*21))),np.reshape(yy,(1,(21*21)))] 
-    etha = 0.00001
-    iterations = 10000
+    etha = 0.005
+    size = 21*21
     # actually its iterations*10 iterations but i want to measure the speed 
     input_dimension = 2
     data = Patterns
-    HiddenLayerNodes = 30
+    HiddenLayerNodes = 20
     #it seems you need more 20 to get a good circle
     W1, W2 = initialize_weights(HiddenLayerNodes,input_dimension )
 
-    O = iteration(data,T,W1,W2,etha,iterations)
+    O = np.matrix(iteration(data,T,W1,W2,etha,HiddenLayerNodes,size))
 
 
     zz = np.reshape(O,(21,21))
