@@ -28,7 +28,7 @@ def generate_data(mean,cov,y,size):
         T = (np.matrix(np.ones(size)))
     elif y == -1:
         T = np.matrix([-1 for i in range(size)])
-    #print(x.shape)
+
     return x, T
     
 # =============================================================================
@@ -129,7 +129,7 @@ def initialize_weights(n, input_dimension, ):
          #if you want bias in second layer
         
    
-    W2 = np.matrix(np.random.normal(0,1,n))
+    W2 = np.matrix(np.random.normal(0,1,n+1))
     return np.transpose(W1), W2
 
 
@@ -139,8 +139,9 @@ def forward_pass(data,W1,W2,size):
     sigmoid_f = np.vectorize(sigmoid)
     sigmoid_prime_f = np.vectorize(sigmoid_prime)
     H_star = W1*data
+    H_star = np.r_[H_star,bias]
     H = sigmoid_f(H_star)
-    #H = np.r_[H,bias]
+    
     # remove this comment if you want bias in second layer
     O_star = W2*H
     O = sigmoid_f(O_star)
@@ -153,17 +154,24 @@ def forward_pass(data,W1,W2,size):
     
     
     
-def backpropagation(H_star,H,O_star,O,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2):
+def backpropagation(H_star,H,O_star,O,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2,HiddenLayerNodes):
 
     delta_O = np.multiply((O-T),(sigmoid_prime_O_star))
     placeHolder = (np.transpose(W2)*delta_O)
     delta_H = np.multiply(placeHolder,sigmoid_prime_H_star)
+    delta_H = np.array(delta_H)
+
+    delta_H = np.delete(delta_H, HiddenLayerNodes,axis = 0)
+
     return delta_O,delta_H
     
     
     
 def step(x):
-    return 1 * (x > 0)
+    if (x > 0):
+        return 1 
+    if (x < 0):
+        return 0
 def batch_learning(data, T, W1, W2):
     sigmoid_f = np.vectorize(sigmoid)
     sigmoid_prime_f = np.vectorize(sigmoid_prime)
@@ -174,27 +182,43 @@ def weight_update(delta_O,delta_H,X,H,etha):
     return delta_W1,delta_W2
     
 
-def iteration(X,T,W1,W2,size,etha,datatest,Ttest):
+def iteration(X,T,W1,W2,size,etha,datatest,Ttest,HiddenLayerNodes):
     O = 0
     step_f = np.vectorize(step)
-    old = ((step_f(W1*datatest)-(step_f(Ttest))!=0).sum()/100)
-    old2 = ((step_f(W1*X)-(step_f(T))!=0).sum()/200)
-    for x in range(1,10):
-        for y in range(1,10):
-                
-            H_star,H,O_star,O,sigmoid_prime_O_star,sigmoid_prime_H_star,H = forward_pass(X,W1,W2,size)
-            delta_O,delta_H = backpropagation(H_star,H,O_star,O ,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2)
-            delta_W1,delta_W2 =  weight_update(delta_O,delta_H,X,H,etha)
-            W1 = W1 + delta_W1*etha
-            W2 = W2 + delta_W2*etha
-            plt.plot([((x*10)+y)-1,((x*10)+y)],[old,((step_f(W1*datatest)-(step_f(Ttest))!=0).sum()/100)],c="r")
-            old = ((step_f(W1*datatest)-(step_f(Ttest))!=0).sum()/100)
-            plt.plot([((x*10)+y)-1,((x*10)+y)],[old2,((step_f(W1*X)-(step_f(T))!=0).sum()/200)],c="b")
-            old2 = ((step_f(W1*X)-(step_f(T))!=0).sum()/200)
+    sigmoid_f = np.vectorize(sigmoid)
+    flag = 0
+    old = 0
+    old2 = 0
+    for x in range(1,200):        
+        H_star,H,O_star,O,sigmoid_prime_O_star,sigmoid_prime_H_star,H = forward_pass(X,W1,W2,size)
+        delta_O,delta_H = backpropagation(H_star,H,O_star,O ,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2,HiddenLayerNodes)
+        delta_W1,delta_W2 =  weight_update(delta_O,delta_H,X,H,etha)
 
-        #print(O)
-    #print(O)
+        H_star1,H,O_star1,O1,sigmoid_prime_O_star1,sigmoid_prime_H_star1,H1 = forward_pass(datatest,W1,W2,50)
+        W1 = W1 + delta_W1*etha
+        W2 = W2 + delta_W2*etha
+        if flag == 1:
+           
+            plt.plot([(x)-1,x],[old,(((step_f(O1)-(step_f(Ttest))!=0).sum())/100)],c="r")
+            
+            plt.plot([(x)-1,x],[old2,(((step_f(O)-(step_f(T))!=0).sum())/200)],c="b")
+            
+        else:
+            flag = 1
+        old = (((step_f(O1)-(step_f(Ttest))!=0).sum())/100)
+        old2 = (((step_f(O)-(step_f(T))!=0).sum())/200)
+        #print("1")
+        #print(W1*X)
+        #print("2")
+        #print((step_f(sigmoid_f(W1*X))))
+        #print("3")
+        #print(T)
+        #print("4")
+        #print(step_f(T))
+
+
     return W1,O
+
 
 def main():
     mean1 = [0, 0]
@@ -206,13 +230,13 @@ def main():
     size = 100
     y1 = 1
     y2 = -1
-    HiddenLayerNodes = 10
+    HiddenLayerNodes = 100
     data = 0
     T = 0
     #create_data(mean1,cov1,y1,\
          #mean2, cov2,y2,size) 
     #create_new_data(mean1,cov1,y1,\
-         #mean2, cov2,y2,size) 
+        #mean2, cov2,y2,size) 
 
     Ttest = 0
     datatest = 0
@@ -226,12 +250,10 @@ def main():
         datatest = np.matrix(pickle.load(f)) 
     #plotdata()
     W1, W2 = initialize_weights(HiddenLayerNodes,3)
-    print("T")
-    print(T)
+ 
 
-    W1, O = iteration(data,T,W1,W2,size,etha,datatest,Ttest)
-    #print("Target")
-    #print(((T-O)>0.7).sum()/size*2/100)
+    W1, O = iteration(data,T,W1,W2,size,etha,datatest,Ttest,HiddenLayerNodes)
+
     for x in range(W1.shape[0]):
         W01 = W1.item((x, 0))
         W02 = W1.item((x, 1))
