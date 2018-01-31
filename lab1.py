@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 from random import *
 import numpy as np
+import pickle
+
 
 #mean = [0, 0]
 #	cov = [[1, 0], [0, 1]]
@@ -24,56 +26,101 @@ def generate_data(mean,cov,y,size):
 	
 #print(generate_data( [0, 0] , [[1, 0], [0, 1]] ,1,100)[0][:,1].shape)
 
-
+def step(x):
+    return 1 * (x > 0)
 def create_data(mean1,cov1,y1,\
  		mean2, cov2,y2,size):
 
-	x1,t1 = generate_data(mean1,cov1,y1,size)
-	x2,t2 = generate_data(mean2,cov2,y2,size)
-	data = np.c_[x1,x2]  
-	#print(data)
-	plotdata(x1,x2)
-	permu = np.random.permutation(2*size)
-	dataShuf = data[:,permu]
-	T = np.c_[t1,t2]
-	#print(T)
-	w = np.random.normal(0, 1, len(x1[:,1]))
-	T = T[:,permu]
-
-	return dataShuf, T, np.matrix(w)
-
-
-def plotdata(x1,x2):
-
+	T = 0
+	x1 = 0
+	with open('T.pickle', 'rb') as f:
+		T = np.matrix(pickle.load(f))  
+	with open('dataShuf.pickle', 'rb') as f:
+		data = np.matrix(pickle.load(f))   
+	with open('x1.pickle', 'rb') as f:
 	
-	plt.scatter(x1[0],x1[1] ,c='r')
-	plt.scatter(x2[0], x2[1], c='b')
-	plt.ylabel("some numbers")
-	
+		x1 = (pickle.load(f))  
+	plotdata()
+	w = np.random.normal(0, 1, 3)
 
-def blearning(data, T, W, eta, iterations):
-	for _ in range(iterations):
-		Wdelta = -eta*((W*data-T)*np.transpose(data))
+	return data, T, np.matrix(w)
+
+
+def plotdata():
+    x1 = 0
+    x2 = 0
+    with open('x1.pickle', 'rb') as f:
+        x1 = (pickle.load(f))  
+    with open('x2.pickle', 'rb') as f:
+        x2 = (pickle.load(f)) 
+        plt.scatter(x1[0].tolist(),x1[1].tolist() ,c='r')
+
+    plt.scatter(x2[0].tolist(), x2[1].tolist(), c='b')
+    plt.ylabel("some numbers")
+
+def step_blearning(data, T, W, eta, iterations):
+	step_f = np.vectorize(step)
+	old = ((step_f(W*data)-(step_f(T))!=0).sum()/200)
+	for itera in range(iterations):
+		Wdelta = -eta*((step_f(W*data)-T)*np.transpose(data))
 		W = W + Wdelta
 		#print(Wdelta)
+		plt.plot([itera-1,itera],[old,((step_f(W*data)-(step_f(T))!=0).sum()/200)],c="y")
+		old = ((step_f(W*data)-(step_f(T))!=0).sum()/200)
+	return W, Wdelta
+
+def blearning(data, T, W, eta, iterations):
+	step_f = np.vectorize(step)
+	old = ((step_f(W*data)-(step_f(T))!=0).sum()/200)
+	
+	for itera in range(iterations):
+		Wdelta = -eta*(((W*data-T))*np.transpose(data))
+		W = W + Wdelta
+		#print(Wdelta)
+		plt.plot([itera-1,itera],[old,((step_f(W*data)-(step_f(T))!=0).sum()/200)],c="g")
+		old = ((step_f(W*data)-(step_f(T))!=0).sum()/200)
+
 	return W, Wdelta
 
 
 def seqlearning(data, T, W, eta, iterations):
-    for i in range(len(data[1,:])):
-        for _ in range(iterations):
+    step_f = np.vectorize(step)
+    old = ((step_f(W*data)-(step_f(T))!=0).sum()/200)
+    
+    for itera in range(iterations):
+        for i in range(len((data[1,:][0]).tolist()[0])):
             Wdelta = -eta*((W*data[:,i]-T[0,i])*np.transpose(data[:,i]))
             W = W + Wdelta
-            
+        #plt.plot([itera-1,itera],[old,((step_f(W*data)-(step_f(T))!=0).sum()/200)],c="b")
+        old = ((step_f(W*data)-(step_f(T))!=0).sum()/200)
+    return W, Wdelta
+
+def seqlearning_step(data, T, W, eta, iterations):
+    step_f = np.vectorize(step)
+    old = ((step_f(W*data)-(step_f(T))!=0).sum()/200)
+    for itera in range(iterations):
+        for i in range((len((data[1,:][0]).tolist()[0]))):
+            Wdelta = -eta*((step_f(W*data[:,i])-T[0,i])*np.transpose(data[:,i]))
+            W = W + Wdelta
+        plt.plot([itera-1,itera],[old,((step_f(W*data)-(step_f(T))!=0).sum()/200)],c="r")
+        old = ((step_f(W*data)-(step_f(T))!=0).sum()/200)
+
     return W, Wdelta
 		
 def main():
 
-	dataShuf,T,W = (create_data([0, 0] , [[1, 0], [0, 1]] , 1, [5, 5], [[1, 0], [0, 1]], -1, 100))
-	W , Wdelta = blearning(dataShuf, T, W, 0.0003, 30)
-	#print(W, Wdelta)
-	W = W.tolist()
-	print(W)
+	#dataShuf,T,W11 = (create_data([0, 0] , [[1, 0], [0, 1]] , 1, [5, 5], [[1, 0], [0, 1]], -1, 100))
+	#dataShuf,T,W22 = (create_data([0, 0] , [[1, 0], [0, 1]] , 1, [5, 5], [[1, 0], [0, 1]], -1, 100))
+	#dataShuf,T,W33 = (create_data([0, 0] , [[1, 0], [0, 1]] , 1, [5, 5], [[1, 0], [0, 1]], -1, 100))
+	dataShuf,T,W44 = (create_data([0, 0] , [[1, 0], [0, 1]] , 1, [5, 5], [[1, 0], [0, 1]], -1, 100))
+	#W3 , Wdelta3 = step_blearning(dataShuf, T, W11, 0.0003, 30)
+	#W2 , Wdelta2 =  seqlearning_step(dataShuf, T, W22, 0.0003, 30)
+	#W4 , Wdelta4 = blearning(dataShuf, T, W33, 0.0003, 30)
+	W1 , Wdelta1 = seqlearning(dataShuf, T, W44, 0.0003, 30)
+
+
+	#print(W*dataShuf)
+	W = W1.tolist()
 	plt.plot([0,-W[0][2]/W[0][1]],[-W[0][2]/W[0][0],0])
 	plt.show()
 
