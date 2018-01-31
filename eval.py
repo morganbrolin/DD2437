@@ -99,19 +99,20 @@ def initialize_weights(n, input_dimension, ):
          W1 = np.r_[W1,np.matrix(np.random.normal(0,1,input_dimension))]
          #W1 = np.r_[W1,np.matrix(np.random.normal(0,1,n+1))]
          #if you want bias in second layer
-    W2 = np.matrix(np.random.normal(0,1,n))
+    W2 = np.matrix(np.random.normal(0,1,n+1))
 
     return W1, W2
 
 
-def forward_pass(data,W1,W2):
-
-
+def forward_pass(data,W1,W2,size):
+    bias = [1 for i in range(size)]
+    bias = (np.matrix(bias))
     sigmoid_f = np.vectorize(sigmoid)
     sigmoid_prime_f = np.vectorize(sigmoid_prime)
     H_star = W1*data
+    H_star = np.r_[H_star,bias]
     H = sigmoid_f(H_star)
-    #H = np.r_[H,bias]
+    
     # remove this comment if you want bias in second layer
     O_star = W2*H
     O = sigmoid_f(O_star)
@@ -121,14 +122,19 @@ def forward_pass(data,W1,W2):
     sigmoid_prime_O_star= (sigmoid_prime_f(O_star))
     sigmoid_prime_H_star= (sigmoid_prime_f(H_star))
     return H_star,H,O_star,O,sigmoid_prime_O_star,sigmoid_prime_H_star,H
+
     
     
     
-def backpropagation(H_star,H,O_star,O,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2):
+def backpropagation(H_star,H,O_star,O,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2,HiddenLayerNodes):
 
     delta_O = np.multiply((O-T),(sigmoid_prime_O_star))
     placeHolder = (np.transpose(W2)*delta_O)
     delta_H = np.multiply(placeHolder,sigmoid_prime_H_star)
+    delta_H = np.array(delta_H)
+
+    delta_H = np.delete(delta_H, HiddenLayerNodes,axis = 0)
+
     return delta_O,delta_H
     
     
@@ -144,50 +150,54 @@ def weight_update(delta_O,delta_H,X,H,etha):
     return delta_W1,delta_W2
     
 
-def iteration(X,T,W1,W2,etha):
+def iteration(X,T,W1,W2,etha,HiddenLayerNodes,size):
     delta = 0
     for x in range(1,10):
         for x in range(1,100):
                 
-            H_star,H,O_star,O,sigmoid_prime_O_star,sigmoid_prime_H_star,H = forward_pass(X,W1,W2)
-            delta_O,delta_H = backpropagation(H_star,H,O_star,O ,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2)
+            H_star,H,O_star,O,sigmoid_prime_O_star,sigmoid_prime_H_star,H = forward_pass(X,W1,W2,size)
+            delta_O,delta_H = backpropagation(H_star,H,O_star,O ,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2,HiddenLayerNodes)
             delta_W1,delta_W2 =  weight_update(delta_O,delta_H,X,H,etha)
             W1 = W1 + delta_W1*etha
             W2 = W2 + delta_W2*etha
             delta = delta_W1
         #print(W1[0])
-        print(delta)
+        #print(delta)
     return O,W1,W2
 
 
 
-def oneTimeIteration(X,T,W1,W2,etha):
+def oneTimeIteration(X,T,W1,W2,etha,size):
 
-    H_star,H,O_star,O,sigmoid_prime_O_star,sigmoid_prime_H_star,H = forward_pass(X,W1,W2)
+    H_star,H,O_star,O,sigmoid_prime_O_star,sigmoid_prime_H_star,H = forward_pass(X,W1,W2,size)
     return O
 def main():
-    n = 21*20
+    n = 25
     x = np.arange(-5,5.5,0.5)
     y = np.arange(-5,5.5,0.5)
     xx,yy =np.meshgrid(x,y, sparse=False)
     z2 = (np.exp(-(xx**2+yy**2)/10)-0.5)
-    Tsmall = np.array(np.reshape(z2,(1,(21*21))))[0][0:n]
+    #Tsmall = np.array(np.reshape(z2,(1,(21*21))))[0][0:n]
     T = np.reshape(z2,(1,(21*21)))
+    size = n
+    big_size = 21*21
 
     Patterns = np.r_[np.reshape((xx),(1,(21*21))),np.reshape(yy,(1,(21*21)))] 
-    etha = 0.001
+    etha = 0.005
     input_dimension = 2
-    dataSmall = np.matrix(Patterns)[:,:n]
-    HiddenLayerNodes = 20
-    print(dataSmall)
-    print("T")
+    permu = np.random.permutation(21*21)
+    permu = permu[0:n]
+
+    dataSmall = np.matrix(Patterns)[: ,permu]
+    Tsmall = np.matrix(T)[:,permu]
+    HiddenLayerNodes = 50
 
     #it seems you need more 20 to get a good circle
     W1, W2 = initialize_weights(HiddenLayerNodes,input_dimension )
 
-    O,W1,W2 = iteration(dataSmall,Tsmall,W1,W2,etha)
+    O,W1,W2 = iteration(dataSmall,Tsmall,W1,W2,etha,HiddenLayerNodes,size)
 
-    O = oneTimeIteration(Patterns,T,W1,W2,etha)
+    O = oneTimeIteration(Patterns,T,W1,W2,etha,big_size)
     print("OO")
     print(O)
     zz = np.reshape(O,(21,21))
@@ -197,10 +207,10 @@ def main():
     print("space\n")
     print(z2[0])
     """
-    print("O\n")
-    print(O)
-    print("T\n")
-    print(T)
+    #print("O\n")
+    #print(O)
+    #print("T\n")
+    #print(T)
     plt.contourf(xx,yy,np.array(zz))
     #plt.contourf(xx,yy,z2)
     plt.show()
