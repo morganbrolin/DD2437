@@ -124,14 +124,14 @@ def batch_learning(data, T, W1, W2):
     sigmoid_prime_f = np.vectorize(sigmoid_prime)
 
 def weight_update(delta_O,delta_H,X,H,etha):
-    delta_W1 = -etha*delta_H*np.transpose(X)
-    delta_W2 = -etha*delta_O*np.transpose(H)
+    delta_W1 = delta_H*np.transpose(X)
+    delta_W2 = delta_O*np.transpose(H)
     return delta_W1,delta_W2
     
 
 def iteration(X,T,W1,W2,etha):
     for x in range(1,10):
-        for x in range(1,10000):
+        for x in range(1,1000):
                 
             H_star,H,O_star,O,sigmoid_prime_O_star,sigmoid_prime_H_star,H = forward_pass(X,W1,W2)
             delta_O,delta_H = backpropagation(H_star,H,O_star,O ,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2)
@@ -139,7 +139,7 @@ def iteration(X,T,W1,W2,etha):
             W1 = W1 + delta_W1*etha
             W2 = W2 + delta_W2*etha
 
-        print(O)
+        #print(O)
     return O
 
 def main():
