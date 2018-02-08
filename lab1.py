@@ -46,7 +46,7 @@ def create_data(mean1,cov1,y1,\
     with open('x1.pickle', 'rb') as f:
     
         x1 = (pickle.load(f))  
-    #plotdata()
+    
     w = np.random.normal(0, 1, 3)
 
     return data, T, np.matrix(w)
@@ -62,7 +62,9 @@ def plotdata():
         plt.scatter(x1[0].tolist(),x1[1].tolist() ,c='r')
 
     plt.scatter(x2[0].tolist(), x2[1].tolist(), c='b')
-    plt.ylabel("some numbers")
+    plt.ylabel("y value")
+    plt.xlabel("x value")
+    plt.title("Decision boundries")
 
 def step_blearning(data, T, W, eta, iterations):
     step_f = np.vectorize(step)
@@ -71,7 +73,7 @@ def step_blearning(data, T, W, eta, iterations):
         Wdelta = -eta*((step_f(W*data)-T)*np.transpose(data))
         W = W + Wdelta
         #print(Wdelta)
-        plt.plot([itera-1,itera],[old,((step_f(W*data)-(step_f(T))!=0).sum()/200)],c="y")
+        plt.plot([itera,itera+1],[old,((step_f(W*data)-(step_f(T))!=0).sum()/200)],c="y")
         old = ((step_f(W*data)-(step_f(T))!=0).sum()/200)
     return W, Wdelta
 
@@ -83,7 +85,7 @@ def blearning(data, T, W, eta, iterations):
         Wdelta = -eta*(((W*data-T))*np.transpose(data))
         W = W + Wdelta
         #print(Wdelta)
-        plt.plot([itera-1,itera],[old,((step_f(W*data)-(step_f(T))!=0).sum()/200)],c="g")
+        plt.plot([itera,itera+1],[old,((step_f(W*data)-(step_f(T))!=0).sum()/200)],c="g")
         old = ((step_f(W*data)-(step_f(T))!=0).sum()/200)
 
     return W, Wdelta
@@ -100,7 +102,7 @@ def seqlearning(data, T, W, eta, iterations):
             Wdelta = -eta*e*np.transpose(data[:,i])
          
             W = W + Wdelta
-        plt.plot([itera-1,itera],[old,((step_f(W*data)-(step_f(T))!=0).sum()/200)],c="b")
+        plt.plot([itera,itera+1],[old,((step_f(W*data)-(step_f(T))!=0).sum()/200)],c="b")
         old = ((step_f(W*data)-(step_f(T))!=0).sum()/200)
 
     return W, Wdelta
@@ -125,33 +127,38 @@ def seqlearning_step(data, T, W, eta, iterations):
             #if (e==-1):
                 #break
 
-        plt.plot([itera-1,itera],[old,((step_f(W*data)-(step_f(T))!=0).sum()/200)],c="r")
+        plt.plot([itera,itera+1],[old,((step_f(W*data)-(step_f(T))!=0).sum()/200)],c="r")
         old = ((step_f(W*data)-(step_f(T))!=0).sum()/200)
     return W, Wdelta
         
 def main():
+    plt.subplot(211)
+    plt.ylabel("Misclassification ratio")
+    plt.xlabel("Iterations")
+    plt.title("Misclassification")
 
     dataShuf,T,W11 = (create_data([0, 0] , [[1, 0], [0, 1]] , 1, [5, 5], [[1, 0], [0, 1]], -1, 100))
     dataShuf,T,W22 = (create_data([0, 0] , [[1, 0], [0, 1]] , 1, [5, 5], [[1, 0], [0, 1]], -1, 100))
     dataShuf,T,W33 = (create_data([0, 0] , [[1, 0], [0, 1]] , 1, [5, 5], [[1, 0], [0, 1]], -1, 100))
     dataShuf,T,W44 = (create_data([0, 0] , [[1, 0], [0, 1]] , 1, [5, 5], [[1, 0], [0, 1]], -1, 100))
-    W1 , Wdelta1 = seqlearning(dataShuf, T, W44, 0.01, 10)
-    W3 , Wdelta3 = step_blearning(dataShuf, T, W11, 0.0003, 30)
-    W2 , Wdelta2 =  seqlearning_step(dataShuf, T, W22, 0.01, 20)
+    W1 , Wdelta1 = seqlearning(dataShuf, T, W44, 0.01, 30)
+    W3 , Wdelta3 = step_blearning(dataShuf, T, W11, 0.01, 30)
+    W2 , Wdelta2 =  seqlearning_step(dataShuf, T, W22, 0.01, 30)
     W4 , Wdelta4 = blearning(dataShuf, T, W33, 0.0003, 30)
    
-
+    plt.subplot(212)
+    plotdata()
     W = W1.tolist()
-    #plt.plot([0,-W[0][2]/W[0][1]],[-W[0][2]/W[0][0],0],c="b")
+    plt.plot([0,-W[0][2]/W[0][1]],[-W[0][2]/W[0][0],0],c="b")
     #print(W*dataShuf)
     W = W2.tolist()
-    #plt.plot([0,-W[0][2]/W[0][1]],[-W[0][2]/W[0][0],0],c="r")
+    plt.plot([0,-W[0][2]/W[0][1]],[-W[0][2]/W[0][0],0],c="r")
 
     W = W3.tolist()
-    #plt.plot([0,-W[0][2]/W[0][1]],[-W[0][2]/W[0][0],0],c="y")
+    plt.plot([0,-W[0][2]/W[0][1]],[-W[0][2]/W[0][0],0],c="y")
     #print(W*dataShuf)
     W = W4.tolist()
-    #plt.plot([0,-W[0][2]/W[0][1]],[-W[0][2]/W[0][0],0],c="g")
+    plt.plot([0,-W[0][2]/W[0][1]],[-W[0][2]/W[0][0],0],c="g")
     plt.show()
 
 
