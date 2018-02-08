@@ -193,7 +193,7 @@ def iteration(X,T,W1,W2,size,etha,datatest,Ttest,HiddenLayerNodes):
     flag = 0
     old = 0
     old2 = 0
-    for x in range(1,10):        
+    for x in range(1,200):        
         H_star,H,O_star,O,sigmoid_prime_O_star,sigmoid_prime_H_star,H = forward_pass(X,W1,W2,size)
         delta_O,delta_H = backpropagation(H_star,H,O_star,O ,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2,HiddenLayerNodes)
         delta_W1,delta_W2 =  weight_update(delta_O,delta_H,X,H,etha)
@@ -314,6 +314,9 @@ def main():
         #x = -c/a if y = 0 
 
         #plt.plot([0,-W00/W02],[-W00/W01,0])
+    plt.ylabel("Misclassification ratio")
+    plt.xlabel("Iterations")
+    plt.title("change some parameters")
     plt.show()
     return
     
