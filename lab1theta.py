@@ -107,7 +107,7 @@ def plotdata():
     
     
 def sigmoid(x):
-    return 2/(1+np.log(1+math.exp(-x))) - 1
+    return (2/((1+math.exp(-x)))) - 1
 
 
 def sigmoid_prime(x):
