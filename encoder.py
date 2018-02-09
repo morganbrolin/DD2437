@@ -146,7 +146,7 @@ def main():
     etha = 0.01
     input_dimension = 8
     HiddenLayerNodes = 3
-    numberOfIterations = 1000
+    numberOfIterations = 10000
     W1, W2 = initialize_weights(HiddenLayerNodes,input_dimension )
     X1 = [1,-1,-1,-1,-1,-1,-1,-1]
     X2 = [-1,1,-1,-1,-1,-1,-1,-1]
@@ -181,6 +181,11 @@ def main():
     print(e)
     print(O)
     print(latestX)
+    print("W1",W1,"W1")
+    print("W2",W2,"W2")
+    plt.ylabel("Misclassification ratio")
+    plt.xlabel("Iterations")
+    plt.title("Encoder 0.01 etha")
     plt.show()
     return
     
