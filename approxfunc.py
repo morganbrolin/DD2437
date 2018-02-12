@@ -172,12 +172,11 @@ def main():
     z2 = (np.exp(-(xx**2+yy**2)/10)-0.5)
     T = np.reshape(z2,(1,(21*21)))
     Patterns = np.r_[np.reshape((xx),(1,(21*21))),np.reshape(yy,(1,(21*21)))] 
-    etha = 0.005
+    etha = 0.0005
     size = 21*21
-    # actually its iterations*10 iterations but i want to measure the speed 
     input_dimension = 2
     data = Patterns
-    HiddenLayerNodes = 20
+    HiddenLayerNodes = 30
     #it seems you need more 20 to get a good circle
     W1, W2 = initialize_weights(HiddenLayerNodes,input_dimension )
 
@@ -197,6 +196,9 @@ def main():
     print(T)
     plt.contourf(xx,yy,np.array(zz))
     #plt.contourf(xx,yy,z2)
+    plt.ylabel("y value")
+    plt.xlabel("x value")
+    plt.title("")
     plt.show()
     return
 main()    

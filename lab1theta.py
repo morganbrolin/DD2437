@@ -279,7 +279,7 @@ def main():
     size = 100
     y1 = 1
     y2 = -1
-    HiddenLayerNodes = 10
+    HiddenLayerNodes = 100
     data = 0
     T = 0
     #create_data(mean1,cov1,y1,\
@@ -301,7 +301,7 @@ def main():
     W1, W2 = initialize_weights(HiddenLayerNodes,3)
  
 
-    W1, O = iterationSeq(data,T,W1,W2,size,etha,datatest,Ttest,HiddenLayerNodes)
+    W1, O = iteration(data,T,W1,W2,size,etha,datatest,Ttest,HiddenLayerNodes)
 
     for x in range(W1.shape[0]):
         W01 = W1.item((x, 0))
@@ -316,7 +316,7 @@ def main():
         #plt.plot([0,-W00/W02],[-W00/W01,0])
     plt.ylabel("Misclassification ratio")
     plt.xlabel("Iterations")
-    plt.title("change some parameters")
+    plt.title("batch 100 nodes")
     plt.show()
     return
     
