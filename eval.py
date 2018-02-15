@@ -151,9 +151,11 @@ def weight_update(delta_O,delta_H,X,H,etha):
     
 
 def iteration(X,T,W1,W2,etha,HiddenLayerNodes,size):
+    print(W1.shape)
+    print(W2.shape)
     delta = 0
     for x in range(1,10):
-        for x in range(1,100):
+        for x in range(1,10):
                 
             H_star,H,O_star,O,sigmoid_prime_O_star,sigmoid_prime_H_star,H = forward_pass(X,W1,W2,size)
             delta_O,delta_H = backpropagation(H_star,H,O_star,O ,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2,HiddenLayerNodes)
@@ -161,8 +163,8 @@ def iteration(X,T,W1,W2,etha,HiddenLayerNodes,size):
             W1 = W1 + delta_W1*etha
             W2 = W2 + delta_W2*etha
             delta = delta_W1
-        #print(W1[0])
         #print(delta)
+        #print("delta")
     return O,W1,W2
 
 
@@ -172,7 +174,7 @@ def oneTimeIteration(X,T,W1,W2,etha,size):
     H_star,H,O_star,O,sigmoid_prime_O_star,sigmoid_prime_H_star,H = forward_pass(X,W1,W2,size)
     return O
 def main():
-    n = 25
+    n = 21*21
     x = np.arange(-5,5.5,0.5)
     y = np.arange(-5,5.5,0.5)
     xx,yy =np.meshgrid(x,y, sparse=False)
@@ -182,15 +184,23 @@ def main():
     size = n
     big_size = 21*21
 
+    bias = [1 for i in range(big_size)]
+    bias = (np.matrix(bias))
     Patterns = np.r_[np.reshape((xx),(1,(21*21))),np.reshape(yy,(1,(21*21)))] 
-    etha = 0.005
-    input_dimension = 2
+    Patterns = np.r_[Patterns,(bias)]
     permu = np.random.permutation(21*21)
     permu = permu[0:n]
 
     dataSmall = np.matrix(Patterns)[: ,permu]
+
+
+
+    
+    etha = 0.005
+    input_dimension = 3
+
     Tsmall = np.matrix(T)[:,permu]
-    HiddenLayerNodes = 50
+    HiddenLayerNodes = 10
 
     #it seems you need more 20 to get a good circle
     W1, W2 = initialize_weights(HiddenLayerNodes,input_dimension )
@@ -198,8 +208,6 @@ def main():
     O,W1,W2 = iteration(dataSmall,Tsmall,W1,W2,etha,HiddenLayerNodes,size)
 
     O = oneTimeIteration(Patterns,T,W1,W2,etha,big_size)
-    print("OO")
-    print(O)
     zz = np.reshape(O,(21,21))
     """
     print("space\n")
