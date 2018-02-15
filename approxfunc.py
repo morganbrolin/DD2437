@@ -142,10 +142,11 @@ def weight_update(delta_O,delta_H,X,H,etha):
     return delta_W1,delta_W2
     
 
-def iteration(X,T,W1,W2,etha,HiddenLayerNodes,size):
+def iteration(X,T,W1,W2,etha,HiddenLayerNodes,size,xx,yy):
     delta = 0
+    O = 0
     for x in range(1,10):
-        for x in range(1,100):
+        for _ in range(1,40):
                 
             H_star,H,O_star,O,sigmoid_prime_O_star,sigmoid_prime_H_star,H = forward_pass(X,W1,W2,size)
             delta_O,delta_H = backpropagation(H_star,H,O_star,O ,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2,HiddenLayerNodes)
@@ -155,6 +156,8 @@ def iteration(X,T,W1,W2,etha,HiddenLayerNodes,size):
             delta = delta_W1
         #print(W1[0])
         print(delta)
+        zz = np.reshape(O,(21,21))
+        mashPlot(xx,yy,np.array(zz))
     return O
 
 def mashPlot(X, Y, Z):
@@ -185,25 +188,26 @@ def main():
     size = 21*21
     input_dimension = 3
     data = Patterns
-    HiddenLayerNodes = 30
+    HiddenLayerNodes = 3
     #it seems you need more 20 to get a good circle
     W1, W2 = initialize_weights(HiddenLayerNodes,input_dimension )
 
-    O = np.matrix(iteration(data,T,W1,W2,etha,HiddenLayerNodes,size))
+    O = np.matrix(iteration(data,T,W1,W2,etha,HiddenLayerNodes,size,xx,yy))
 
 
-    zz = np.reshape(O,(21,21))
+    
     """
     print("space\n")
     print(zz[0])
     print("space\n")
     print(z2[0])
     """
+    plt.show()
     print("O\n")
     print(O)
     print("T\n")
     print(T)
-    mashPlot(xx,yy,np.array(zz))
+    
     #plt.contourf(xx,yy,np.array(zz))
     #plt.contourf(xx,yy,z2)
     
