@@ -63,7 +63,7 @@ def plotdata(x1,x2):
     
     
 def sigmoid(x):
-    return 2/(1+np.log(1+math.exp(-x))) - 1
+    return (2/((1+math.exp(-x)))) - 1
 
 
 def sigmoid_prime(x):
@@ -164,12 +164,10 @@ def mashPlot(X, Y, Z):
         fig.colorbar(surf, shrink=0.5, aspect=5)
         plt.show()
 def iteration(X,T,W1,W2,etha,HiddenLayerNodes,size,xx,yy,Patterns,big_size):
-    print(W1.shape)
-    print(W2.shape)
     delta = 0
     O = 0
     for x in range(1,10):
-        for x in range(1,10):
+        for x in range(1,30):
                 
             H_star,H,O_star,O,sigmoid_prime_O_star,sigmoid_prime_H_star,H = forward_pass(X,W1,W2,size)
             delta_O,delta_H = backpropagation(H_star,H,O_star,O ,T,sigmoid_prime_O_star,sigmoid_prime_H_star,W1,W2,HiddenLayerNodes)
@@ -179,11 +177,12 @@ def iteration(X,T,W1,W2,etha,HiddenLayerNodes,size,xx,yy,Patterns,big_size):
             delta = delta_W1
         #print(delta)
         #print("delta")
-        O_big = oneTimeIteration(Patterns,T,W1,W2,etha,big_size)
-        zz = np.reshape(O_big,(21,21))
-        mashPlot(xx,yy,np.array(zz))
+    O_big = oneTimeIteration(Patterns,T,W1,W2,etha,big_size)
+
     return O,W1,W2
 
+def exp_fkn(M_element,n):
+    return M_element**n
 
 
 def oneTimeIteration(X,T,W1,W2,etha,size):
@@ -191,54 +190,71 @@ def oneTimeIteration(X,T,W1,W2,etha,size):
     H_star,H,O_star,O,sigmoid_prime_O_star,sigmoid_prime_H_star,H = forward_pass(X,W1,W2,size)
     return O
 def main():
-    n = 21*21
+    exp_f = np.vectorize(exp_fkn)
     x = np.arange(-5,5.5,0.5)
     y = np.arange(-5,5.5,0.5)
     xx,yy =np.meshgrid(x,y, sparse=False)
     z2 = (np.exp(-(xx**2+yy**2)/10)-0.5)
-    #Tsmall = np.array(np.reshape(z2,(1,(21*21))))[0][0:n]
     T = np.reshape(z2,(1,(21*21)))
-    size = n
     big_size = 21*21
-
     bias = [1 for i in range(big_size)]
     bias = (np.matrix(bias))
-    Patterns = np.r_[np.reshape((xx),(1,(21*21))),np.reshape(yy,(1,(21*21)))] 
-    Patterns = np.r_[Patterns,(bias)]
-    permu = np.random.permutation(21*21)
-    permu = permu[0:n]
-
-    dataSmall = np.matrix(Patterns)[: ,permu]
-
-
-
-    
-    etha = 0.005
+    etha = 0.001
     input_dimension = 3
 
-    Tsmall = np.matrix(T)[:,permu]
-    HiddenLayerNodes = 10
+    
+    HiddenLayerNodes =  50
 
     #it seems you need more 20 to get a good circle
     W1, W2 = initialize_weights(HiddenLayerNodes,input_dimension )
+    Patterns = np.r_[np.reshape((xx),(1,(21*21))),np.reshape(yy,(1,(21*21)))] 
+    Patterns = np.r_[Patterns,(bias)]
+    O_big = oneTimeIteration(Patterns,T,W1,W2,etha,big_size)
+    old = ((exp_f((T-O_big),2)).sum())
+    for nminusone in range(25):
+        n = nminusone+1
 
-    O,W1,W2 = iteration(dataSmall,Tsmall,W1,W2,etha,HiddenLayerNodes,size,xx,yy,Patterns,big_size)
+        
+        #Tsmall = np.array(np.reshape(z2,(1,(21*21))))[0][0:n]
+        
+        size = n
+        
 
 
-    zz = np.reshape(O,(21,21))
-    """
-    print("space\n")
-    print(zz[0])
-    print("space\n")
-    print(z2[0])
-    """
-    #print("O\n")
-    #print(O)
-    #print("T\n")
-    #print(T)
-    plt.contourf(xx,yy,np.array(zz))
-    #plt.contourf(xx,yy,z2)
-    #plt.show()
+        permu = np.random.permutation(21*21)
+        permu = permu[0:n]
+        Tsmall = np.matrix(T)[:,permu]
+        dataSmall = np.matrix(Patterns)[: ,permu]
+
+
+
+        
+
+
+        O,W1,W2 = iteration(dataSmall,Tsmall,W1,W2,etha,HiddenLayerNodes,size,xx,yy,Patterns,big_size)
+        O_big = oneTimeIteration(Patterns,T,W1,W2,etha,big_size)
+        
+        plt.plot([(nminusone),nminusone+1],[old,((exp_f((T-O_big),2)).sum())],c="r")
+        old = ((exp_f((T-O_big),2)).sum())
+       # zz = np.reshape(O,(21,21))
+        """
+        print("space\n")
+        print(zz[0])
+        print("space\n")
+        print(z2[0])
+        """
+        #print("O\n")
+        #print(O)
+        #print("T\n")
+        #print(T)
+        #plt.contourf(xx,yy,np.array(zz))
+        #plt.contourf(xx,yy,z2)
+   
+    plt.ylabel("MSE")
+    plt.xlabel("Number of training datapoints")
+    plt.title("Evaluation from a subset of points with 50 nodes")
+    zz = np.reshape(O_big,(21,21))
+    mashPlot(xx,yy,np.array(zz))
     return
 main()    
     
