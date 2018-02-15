@@ -1,15 +1,9 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Jan 27 00:39:30 2018
-
-@author: mukund
-"""
-
 import matplotlib.pyplot as plt
 import numpy as np
 import math
 from mpl_toolkits.mplot3d import Axes3D
-
+from matplotlib import cm
+from matplotlib.ticker import LinearLocator, FormatStrFormatter
 # =============================================================================
 #  mean = [0, 0]
 #     cov = [[1, 0], [0, 1]]
@@ -34,7 +28,6 @@ def generate_data(mean,cov,y,size):
 # =============================================================================
 # print(generate_data( [0, 0] , [[1, 0], [0, 1]] ,1,100)[0][:,1].shape)
 # =============================================================================
-
 
 def create_data(mean1,cov1,y1,\
          mean2, cov2,y2,size):
@@ -164,6 +157,19 @@ def iteration(X,T,W1,W2,etha,HiddenLayerNodes,size):
         print(delta)
     return O
 
+def mashPlot(X, Y, Z):
+        fig = plt.figure()
+        ax = fig.gca(projection='3d')
+        # Plot the surface.
+        surf = ax.plot_surface(X, Y, Z, cmap=cm.coolwarm, linewidth=0, antialiased=False)
+        # Customize the z axis.
+        ax.set_zlim(-1.01, 1.01)
+        ax.zaxis.set_major_locator(LinearLocator(10))
+        ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
+        # Add a color bar which maps values to colors.
+        fig.colorbar(surf, shrink=0.5, aspect=5)
+        plt.show()
+
 def main():
 
     x = np.arange(-5,5.5,0.5)
@@ -172,7 +178,7 @@ def main():
     z2 = (np.exp(-(xx**2+yy**2)/10)-0.5)
     T = np.reshape(z2,(1,(21*21)))
     Patterns = np.r_[np.reshape((xx),(1,(21*21))),np.reshape(yy,(1,(21*21)))] 
-    etha = 0.0005
+    etha = 0.005
     size = 21*21
     input_dimension = 2
     data = Patterns
@@ -194,14 +200,14 @@ def main():
     print(O)
     print("T\n")
     print(T)
-    plt.contourf(xx,yy,np.array(zz))
+    mashPlot(xx,yy,np.array(zz))
+    #plt.contourf(xx,yy,np.array(zz))
     #plt.contourf(xx,yy,z2)
-    plt.ylabel("y value")
-    plt.xlabel("x value")
-    plt.title("")
-    plt.show()
+    
+    #plt.ylabel("y value")
+    #plt.xlabel("x value")
+    #plt.title("")
+    #plt.show()
     return
 main()    
-    
-    
     
