@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
+from matplotlib.ticker import LinearLocator, FormatStrFormatter
 
 # =============================================================================
 #  mean = [0, 0]
@@ -149,11 +151,23 @@ def weight_update(delta_O,delta_H,X,H,etha):
     delta_W2 = -delta_O*np.transpose(H)
     return delta_W1,delta_W2
     
-
-def iteration(X,T,W1,W2,etha,HiddenLayerNodes,size):
+def mashPlot(X, Y, Z):
+        fig = plt.figure()
+        ax = fig.gca(projection='3d')
+        # Plot the surface.
+        surf = ax.plot_surface(X, Y, Z, cmap=cm.coolwarm, linewidth=0, antialiased=False)
+        # Customize the z axis.
+        ax.set_zlim(-1.01, 1.01)
+        ax.zaxis.set_major_locator(LinearLocator(10))
+        ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
+        # Add a color bar which maps values to colors.
+        fig.colorbar(surf, shrink=0.5, aspect=5)
+        plt.show()
+def iteration(X,T,W1,W2,etha,HiddenLayerNodes,size,xx,yy,Patterns,big_size):
     print(W1.shape)
     print(W2.shape)
     delta = 0
+    O = 0
     for x in range(1,10):
         for x in range(1,10):
                 
@@ -165,6 +179,9 @@ def iteration(X,T,W1,W2,etha,HiddenLayerNodes,size):
             delta = delta_W1
         #print(delta)
         #print("delta")
+        O_big = oneTimeIteration(Patterns,T,W1,W2,etha,big_size)
+        zz = np.reshape(O_big,(21,21))
+        mashPlot(xx,yy,np.array(zz))
     return O,W1,W2
 
 
@@ -205,9 +222,9 @@ def main():
     #it seems you need more 20 to get a good circle
     W1, W2 = initialize_weights(HiddenLayerNodes,input_dimension )
 
-    O,W1,W2 = iteration(dataSmall,Tsmall,W1,W2,etha,HiddenLayerNodes,size)
+    O,W1,W2 = iteration(dataSmall,Tsmall,W1,W2,etha,HiddenLayerNodes,size,xx,yy,Patterns,big_size)
 
-    O = oneTimeIteration(Patterns,T,W1,W2,etha,big_size)
+
     zz = np.reshape(O,(21,21))
     """
     print("space\n")
@@ -221,7 +238,7 @@ def main():
     #print(T)
     plt.contourf(xx,yy,np.array(zz))
     #plt.contourf(xx,yy,z2)
-    plt.show()
+    #plt.show()
     return
 main()    
     
