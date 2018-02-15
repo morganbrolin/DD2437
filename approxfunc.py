@@ -1,9 +1,15 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Jan 27 00:39:30 2018
+
+@author: mukund
+"""
+
 import matplotlib.pyplot as plt
 import numpy as np
 import math
 from mpl_toolkits.mplot3d import Axes3D
-from matplotlib import cm
-from matplotlib.ticker import LinearLocator, FormatStrFormatter
+
 # =============================================================================
 #  mean = [0, 0]
 #     cov = [[1, 0], [0, 1]]
@@ -28,6 +34,7 @@ def generate_data(mean,cov,y,size):
 # =============================================================================
 # print(generate_data( [0, 0] , [[1, 0], [0, 1]] ,1,100)[0][:,1].shape)
 # =============================================================================
+
 
 def create_data(mean1,cov1,y1,\
          mean2, cov2,y2,size):
@@ -144,6 +151,7 @@ def weight_update(delta_O,delta_H,X,H,etha):
 
 def iteration(X,T,W1,W2,etha,HiddenLayerNodes,size):
     delta = 0
+    O = 0
     for x in range(1,10):
         for x in range(1,100):
                 
@@ -157,19 +165,6 @@ def iteration(X,T,W1,W2,etha,HiddenLayerNodes,size):
         print(delta)
     return O
 
-def mashPlot(X, Y, Z):
-        fig = plt.figure()
-        ax = fig.gca(projection='3d')
-        # Plot the surface.
-        surf = ax.plot_surface(X, Y, Z, cmap=cm.coolwarm, linewidth=0, antialiased=False)
-        # Customize the z axis.
-        ax.set_zlim(-1.01, 1.01)
-        ax.zaxis.set_major_locator(LinearLocator(10))
-        ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
-        # Add a color bar which maps values to colors.
-        fig.colorbar(surf, shrink=0.5, aspect=5)
-        plt.show()
-
 def main():
 
     x = np.arange(-5,5.5,0.5)
@@ -177,10 +172,14 @@ def main():
     xx,yy =np.meshgrid(x,y, sparse=False)
     z2 = (np.exp(-(xx**2+yy**2)/10)-0.5)
     T = np.reshape(z2,(1,(21*21)))
+    bias = [1 for i in range(21*21)]
+    bias = (np.matrix(bias))
     Patterns = np.r_[np.reshape((xx),(1,(21*21))),np.reshape(yy,(1,(21*21)))] 
-    etha = 0.005
+    Patterns = np.r_[Patterns,(bias)]
+
+    etha = 0.001
     size = 21*21
-    input_dimension = 2
+    input_dimension = 3
     data = Patterns
     HiddenLayerNodes = 30
     #it seems you need more 20 to get a good circle
@@ -200,14 +199,14 @@ def main():
     print(O)
     print("T\n")
     print(T)
-    mashPlot(xx,yy,np.array(zz))
-    #plt.contourf(xx,yy,np.array(zz))
+    plt.contourf(xx,yy,np.array(zz))
     #plt.contourf(xx,yy,z2)
-    
-    #plt.ylabel("y value")
-    #plt.xlabel("x value")
-    #plt.title("")
-    #plt.show()
+    plt.ylabel("y value")
+    plt.xlabel("x value")
+    plt.title("")
+    plt.show()
     return
 main()    
+    
+    
     
