@@ -18,19 +18,25 @@ def read_animals():
 			f.read(1)
 		animal_list.append(animal)
 	return animal_list
+def read_animals_names():
+	#returns a list with animal names
+	f = open('animalnames.dat','r') 
+	animal_list = []
+	for _ in range(32):
+		animal_list.append(f.readline())
+
+	return animal_list
 def similiarity(animal,W):
 	d = None
 	index = None
 	for i in range(len(W)):
 		dist = float((animal - W[i])*np.transpose(animal - W[i]))
-		print(dist)
 		if i == 0:
 			d = dist
 			index = 0
-		elif (dist) < d:
+		elif (dist) > d:
 			d = dist
 			index = i
-
 	return index
 
 def output(animal_list,W):
@@ -49,7 +55,7 @@ def output(animal_list,W):
 			if i == 0:
 				d = dist
 				index = i
-			elif float(dist) < d:
+			elif (dist) > d:
 				d = dist
 				index = i
 		list_of_index_values.append([index,animal_index])
@@ -65,6 +71,7 @@ def initialize_weights(nodes, input_dimension ):
 
 def sequencial_iteration(animal_list,W,neighbourhood,step):
 	for animal in animal_list:
+
 		index = similiarity(animal,W)
 		#print(index)
 
@@ -88,15 +95,30 @@ def epoch_iteration(iterations,animal_list,W,neighbourhood,step,original_neighbo
 		neighbourhood = neighbourhood - (original_neighbourhood/iterations)
 	return W
 def main():
-	neighbourhood = 4
+	neighbourhood = 50
 	step = 0.2
-	iterations = 1
+	iterations = 20
 	nodes = 100
 	animal_list = np.matrix(read_animals())
 	W = initialize_weights(nodes,84)
 	W = epoch_iteration(iterations,animal_list,W,neighbourhood,step,neighbourhood)
 	out = output(animal_list,W)
-	print(out)
+	out_list = []
+	names_list = read_animals_names()
+	for x in range(nodes):
+		list_in_list = []
+		for y in out:
+			if y ==[]:
+				break
+			if y[0]==x:
+					print("crash?")
+					list_in_list.append(names_list[y[1]-1])
+		out_list.append(list_in_list)
+
+
+
+	read_animals_names()
+	print(out_list)
 
 
 main()
