@@ -60,7 +60,7 @@ def plotdata(x1,x2):
     
     
 def sigmoid(x):
-    return 2/(1+np.log(1+math.exp(-x))) - 1
+    return (2/((1+math.exp(-x)))) - 1
 
 
 def sigmoid_prime(x):
@@ -136,7 +136,7 @@ def iteration(X,T,W1,W2,etha):
     delta_W1,delta_W2 =  weight_update(delta_O,delta_H,X,H,etha)
     W1 = W1 + delta_W1*etha
     W2 = W2 + np.transpose(delta_W2*etha)
-    return O,W1,W2
+    return O,W1,W2,H
 
 def main():
     mean1 = [0, 0]
@@ -163,17 +163,19 @@ def main():
     oldesum = 1
     e = 0.4
     esum = 0
+    Hlist = []
     for itera in range(numberOfIterations):
         esum=0
+        Hlist = []
         for X in dataList:
             T = np.transpose(np.matrix(X))
             data = np.transpose(np.matrix(X+[1]))
-            
             e = (O-T).sum()/16
             esum = esum +e
             latestX = X
-        O,W1,W2 = iteration(data,T,W1,W2,etha)
-        plt.plot([itera-1,itera],[oldesum,esum/8],c="b")
+            O,W1,W2,H = iteration(data,T,W1,W2,etha)
+            Hlist.append(H)
+            plt.plot([itera-1,itera],[oldesum,esum/8],c="b")
         oldesum = esum/8
 
     
@@ -181,6 +183,12 @@ def main():
     print(e)
     print(O)
     print(latestX)
+    print("W1",W1,"W1")
+    print("W2",W2,"W2")
+    print("H",Hlist)
+    plt.ylabel("Misclassification ratio")
+    plt.xlabel("Iterations")
+    plt.title("Encoder 0.01 etha")
     plt.show()
     return
     
