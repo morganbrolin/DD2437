@@ -29,12 +29,13 @@ def read_animals_names():
 def similiarity(animal,W):
 	d = None
 	index = None
+
 	for i in range(len(W)):
 		dist = float((animal - W[i])*np.transpose(animal - W[i]))
 		if i == 0:
 			d = dist
 			index = 0
-		elif (dist) > d:
+		elif (dist) < d:
 			d = dist
 			index = i
 	return index
@@ -47,15 +48,12 @@ def output(animal_list,W):
 		d = None
 		index = None
 		for i in range(len(W)):
-
 			dist = float((animal - W[i])*np.transpose(animal - W[i]))
-			#print((animal - W[i]))
-			#print(dist,"dist")
-			#print(np.transpose(animal-W[i]),"transpose")
+
 			if i == 0:
 				d = dist
 				index = i
-			elif (dist) > d:
+			elif (dist) < d:
 				d = dist
 				index = i
 		list_of_index_values.append([index,animal_index])
@@ -73,22 +71,20 @@ def sequencial_iteration(animal_list,W,neighbourhood,step):
 	for animal in animal_list:
 
 		index = similiarity(animal,W)
-		#print(index)
-
 		if neighbourhood == 0 :
 			W[(index)] = W[(index)] + step*(animal-W[(index)])
 
-
-		for i in range(neighbourhood):
-			ind = i + index - neighbourhood/2 -1
-			ind = int(ind)
-			if ind < 0:
-				pass
-			elif ind > len(W[0]):
-				pass
-			else:
-				W[(ind)] = W[(ind)] + step*(animal-W[(ind)])
-				pass
+		else:
+			for i in range(neighbourhood*2+1):
+				ind = i + index - neighbourhood 
+				ind = int(ind)
+				if ind < 0:
+					pass
+				elif ind > (len(W)-1):
+					pass
+				else:
+					W[(ind)] = W[(ind)] + step*(animal-W[(ind)])
+					pass
 
 
 
