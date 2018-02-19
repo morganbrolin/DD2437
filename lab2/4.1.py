@@ -80,7 +80,7 @@ def sequencial_iteration(animal_list,W,neighbourhood,step):
 
 
 		for i in range(neighbourhood):
-			ind = i + index - neighbourhood/2
+			ind = i + index - neighbourhood/2 -1
 			ind = int(ind)
 			if ind < 0:
 				pass
