@@ -75,6 +75,10 @@ def sequencial_iteration(animal_list,W,neighbourhood,step):
 		index = similiarity(animal,W)
 		#print(index)
 
+		if neighbourhood == 0 :
+			W[(index)] = W[(index)] + step*(animal-W[(index)])
+
+
 		for i in range(neighbourhood):
 			ind = i + index - neighbourhood/2
 			ind = int(ind)
@@ -91,11 +95,12 @@ def sequencial_iteration(animal_list,W,neighbourhood,step):
 	return W
 def epoch_iteration(iterations,animal_list,W,neighbourhood,step,original_neighbourhood):
 	for _ in range(iterations):
-		W = sequencial_iteration(animal_list,W,int(neighbourhood),step)
+		W = sequencial_iteration(animal_list,W,int(neighbourhood-2),step)
+		print(neighbourhood)
 		neighbourhood = neighbourhood - (original_neighbourhood/iterations)
 	return W
 def main():
-	neighbourhood = 50
+	neighbourhood = 52
 	step = 0.2
 	iterations = 20
 	nodes = 100
@@ -111,7 +116,6 @@ def main():
 			if y ==[]:
 				break
 			if y[0]==x:
-					print("crash?")
 					list_in_list.append(names_list[y[1]-1])
 		out_list.append(list_in_list)
 
