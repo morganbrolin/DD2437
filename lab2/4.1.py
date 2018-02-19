@@ -29,7 +29,6 @@ def read_animals_names():
 def similiarity(animal,W):
 	d = None
 	index = None
-
 	for i in range(len(W)):
 		dist = float((animal - W[i])*np.transpose(animal - W[i]))
 		if i == 0:
