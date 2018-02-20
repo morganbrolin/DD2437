@@ -146,30 +146,30 @@ def plot_all_data(out):
 	plt.ylabel("Y")
 	plt.xlabel("X")
 	plt.title("All the data")
-	megasum = []
+	z_list = []
 	for i in range(10):
 		sumr = []
 		for j in range(10):
 			summa = 0
 			sumr.append(summa)
-		megasum.append(sumr)
+		z_list.append(sumr)
 	for i in range(10):
-		sumr = []
 		for j in range(10):
 			summa = 0
-			for x in range (349):
-				if ((i*10)+j) == out[x][0]:
-					megasum[i][j] = megasum[i][j]+1
+			for person in range (349):
+				if ((i*10)+j) == out[person][0]:
+					z_list[i][j] = z_list[i][j]+1
 
 
 	x = np.arange(1,11,1)
 	y = np.arange(1,11,1)
 	xx,yy =np.meshgrid(x,y, sparse=False)
-	zz = np.reshape(np.matrix(megasum),(10,10))
-	plt.contourf(xx,yy,np.array(zz))
-	plt.show()
+	zz = np.reshape(np.matrix(z_list),(10,10))
+	cs = plt.contourf(xx,yy,np.array(zz))
+	cbar = plt.colorbar(cs)
 def plot_data_party(out,party,party_list,label_list):
-	megasum = []
+	plt.subplot(330+party+2)
+	z_list = []
 	plt.ylabel("Y")
 	plt.xlabel("X")
 	plt.title(label_list[party])
@@ -178,28 +178,85 @@ def plot_data_party(out,party,party_list,label_list):
 		for j in range(10):
 			summa = 0
 			sumr.append(summa)
-		megasum.append(sumr)
+		z_list.append(sumr)
 	for i in range(10):
-		sumr = []
 		for j in range(10):
 			summa = 0
-			for x in range (349):
-				if ((i*10)+j) == out[x][0]:
-					if party_list[((x))] == party:
-						megasum[i][j] = megasum[i][j]+1
+			for person in range (349):
+				if ((i*10)+j) == out[person][0]:
+					if party_list[((person))] == party:
+						z_list[i][j] = z_list[i][j]+1
 
 
 	x = np.arange(1,11,1)
 	y = np.arange(1,11,1)
 	xx,yy =np.meshgrid(x,y, sparse=False)
-	zz = np.reshape(np.matrix(megasum),(10,10))
-	plt.contourf(xx,yy,np.array(zz))
-	plt.show()
+	zz = np.reshape(np.matrix(z_list),(10,10))
+	cs = plt.contourf(xx,yy,np.array(zz))
+	cbar = plt.colorbar(cs)
+
+
+def plot_data_gender(out,gender,gender_list,label_list):
+	plt.subplot(310+gender+2)
+	z_list = []
+	plt.ylabel("Y")
+	plt.xlabel("X")
+	plt.title(label_list[gender])
+	for i in range(10):
+		sumr = []
+		for j in range(10):
+			summa = 0
+			sumr.append(summa)
+		z_list.append(sumr)
+	for i in range(10):
+		for j in range(10):
+			summa = 0
+			for person in range (349):
+				if ((i*10)+j) == out[person][0]:
+					if gender_list[((person))] == gender:
+						z_list[i][j] = z_list[i][j]+1
+
+
+	x = np.arange(1,11,1)
+	y = np.arange(1,11,1)
+	xx,yy =np.meshgrid(x,y, sparse=False)
+	zz = np.reshape(np.matrix(z_list),(10,10))
+	cs = plt.contourf(xx,yy,np.array(zz))
+	cbar = plt.colorbar(cs)
+	
+def plot_data_district(out,district,district_list,label_list):
+	plt.subplot(6,5,0+district+2)
+	z_list = []
+	plt.ylabel("Y")
+	plt.xlabel("X")
+	plt.title(label_list[district])
+	for i in range(10):
+		sumr = []
+		for j in range(10):
+			summa = 0
+			sumr.append(summa)
+		z_list.append(sumr)
+	for i in range(10):
+		for j in range(10):
+			summa = 0
+			for x in range (349):
+				if ((i*10)+j) == out[x][0]:
+					if district_list[((x))] == district+1:
+						z_list[i][j] = z_list[i][j]+1
+
+
+	x = np.arange(1,11,1)
+	y = np.arange(1,11,1)
+	xx,yy =np.meshgrid(x,y, sparse=False)
+	zz = np.reshape(np.matrix(z_list),(10,10))
+	cs = plt.contourf(xx,yy,np.array(zz))
+	cbar = plt.colorbar(cs)
+	
 
 def main():
 	neighbourhood = 2
-	step = 0.2
-	iterations = 20
+	step = 0.05
+	iterations = 100
 	nodes = 100
 	animal_list = np.matrix(read_votes())
 	party_list = read_mpparty()
@@ -208,17 +265,27 @@ def main():
 	W = initialize_weights(nodes,31)
 	W = epoch_iteration(iterations,animal_list,W,neighbourhood,step,neighbourhood)
 	out = output(animal_list,W)
-
+	plt.subplot(331)
 	plot_all_data(out)
-	label_list = ['no party','m', 'fp', 's','v', 'mp','kd','c']
+	label_list = ['no party','Moderaterna', 'Folkpartiet', 'Socialdemokraterna','Vänsterpartiet', 'Miljöpartiet','Kristemokraterna','Centern']
 	for party in range(8):
 		plot_data_party(out,party,party_list,label_list)
-	label_list = ['m','f']
+
+	label_list = ['Male','Female']
+	plt.show()
+
+	plt.subplot(311)
+	plot_all_data(out)
 	for sex in range(2):
-		plot_data_party(out,sex,sex_list,label_list)
-	label_list = ["None","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29"]
+		plot_data_gender(out,sex,sex_list,label_list)
+	plt.show()
+	plt.subplot(651)
+	plot_all_data(out)
+	
+	label_list = ["District 1","District 2","District 3","District 4","District 5","District 6","District 7","District 8","District 9","District 10","District 11","District 12","District 13","District 14","District 15","District 16","District 17","District 18","District 19","District 20","District 21","District 22","District 23","District 24","District 25","District 26","District 27","District 28","District 29"]
 	for district in range(29):
-		plot_data_party(out,district+1,district_list,label_list)
+		plot_data_district(out,district,district_list,label_list)
+	plt.show()
 
 
 
