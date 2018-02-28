@@ -21,6 +21,9 @@ Y = sign(X*W);
 ite = 1;
 
  while isequal(Y,Xp) == 0 && ite < ite_max
+     %this should fix it but it doesnt make a difference
+     W = zeros(N,N);
+     
      for i = 1: 1: P
          delta_W = etha*(Y(i,:)'*Y(i,:));
          W = W + delta_W;
