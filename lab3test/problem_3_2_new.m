@@ -4,7 +4,6 @@ close all
 clc
 
 %% Load pict.dat
-
 A = importdata('pict.dat');
 P = zeros(11,1024);
 
@@ -29,36 +28,35 @@ P9 = reshape(P(9,:),[32 32]);
 P10 = reshape(P(10,:),[32 32]);
 P11 = reshape(P(11,:),[32 32]);
 
-X_train =  [reshape(P1,[1, 1024]);reshape(P2,[1, 1024]);reshape(P3,[1, 1024]);reshape(P4,[1, 1024])];
-X_test = [reshape(P1,[1, 1024])];
+% Patterns
+patterns = [P(1,:); P(2,:); P(3,:);P(4,:)];
+[p, N] = size(patterns);
+ite_lim = 500;
 
-W = initialize_weights(X_train);
-%W = zeros(1024);
-%W = add_memory(W3,X_train');
-%[printo, updates] = retrieve_memory(W3, reshape(P,[1, 1024])', true, 10);
+% Weight calculation
+W = weight_calc(patterns, 0, 0);
 
+[ P1_degraded_new, ite1 ] = update_patterns( W, P(10,:), ite_lim );
+[ P2_degraded_new, ite2 ] = update_patterns( W, P(11,:), ite_lim );
 
+P1_degraded = reshape(P1_degraded_new,[32 32]);
+P2_degraded = reshape(P2_degraded_new,[32 32]);
 
-
-
-
-%net = newhop(X_train');
-%W = net.LW{1,1};
-
-
-
-ite_max = 3;
-
-[ite,X_out] = weight_update_batch(X_test, ite_max,W);
-
-
-%X_test = [reshape(P10,[1, 1024])];
 figure(1)
-%imagesc(reshape(printo, [32, 32]))
-%imagesc(reshape(sign(P(1,:)*W), [32, 32]))
+subplot(2,1,1)
+imagesc(P10)
+subplot(2,1,2)
+imagesc(P1_degraded)
 
-imagesc(reshape(X_out(1,:), [32, 32]))
 figure(2)
-imagesc(P1)
+subplot(2,1,1)
+imagesc(P11)
+subplot(2,1,2)
+imagesc(P2_degraded)
 
-    
+
+
+
+
+
+

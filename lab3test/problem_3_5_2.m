@@ -17,11 +17,10 @@ for i = 1: 1: length(A)
     P(k,(i-(k-1)*1024)) = A(i);
 end
 X_train = rand(300,100);
-
-learning_rate = 1;
+W = initialize_weights(X_train);
 ite_max = 5;
-[weight_matrix, ite] = weight_update_batch(X_train, learning_rate, ite_max);
-W = weight_matrix;
+weight_update_seqdata_batch(X_train, ite_max,W);
+
 %X_test = [reshape(P10,[1, 1024])];
 
 

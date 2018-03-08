@@ -1,4 +1,4 @@
-function [weight_matrix, ite] = weight_update_new(X_train, learning_rate, ite_max)
+function [weight_matrix, X_out] = weight_update_new(X_train, learning_rate, ite_max)
 % Update weight matrix during Hebbian Learning
 % Detailed explanation goes here
 
@@ -22,13 +22,13 @@ ite = 1;
 
  while isequal(Y,Xp) == 0 && ite < ite_max
      %this should fix it but it doesnt make a difference
-     W = zeros(N,N);
      
      for i = 1: 1: P
-         delta_W = etha*(Y(i,:)'*Y(i,:));
-         W = W + delta_W;
+        Y = sign(X*W);
      end
+     
      Y = sign(Xp*W);
+     X_out = Y
      ite = ite + 1;
  end
  
