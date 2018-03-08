@@ -10,8 +10,9 @@ converged = false;
 ite = 0;
 X_new = X;
 while not(converged) && ite < ite_lim
+    ite = ite + 1;
     for i_n = 1 : N
-        
+  
         sum_of_input = 0;
         for j_n = 1 : N
             sum_of_input = sum_of_input + X_new(:,j_n)*W(j_n,i_n);
