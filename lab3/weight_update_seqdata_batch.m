@@ -7,7 +7,7 @@ N = a(2);
 ratioArray = [0];
 Iarray = [0]
 for i = 1:P 
-    W = weight_calc(X_train(1:i,:),0,0);
+    W = weight_calc_sparse(X_train(1:i,:),0,1);
     [X_new,ite] = update_patterns( W, X_train(1:i,:), ite_max );
     perchentage_match = sum(sum(abs(X_train(1:i,:)-X_new)')==0);
     ratioArray = [ratioArray perchentage_match/i];

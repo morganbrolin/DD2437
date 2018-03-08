@@ -31,13 +31,13 @@ P11 = reshape(P(11,:),[32 32]);
 % Patterns
 patterns = [P(1,:); P(2,:); P(3,:);P(4,:)];
 [p, N] = size(patterns);
-ite_lim = 100;
+ite_lim = 10;
 
 % Weight calculation
-W = weight_calc(patterns, 0, 0);
+W = weight_calc(patterns, 0, 1);
 
-[ P1_degraded_new, ite1 ] = update_patterns( W, P(10,:), ite_lim );
-[ P2_degraded_new, ite2 ] = update_patterns( W, P(11,:), ite_lim );
+[ P1_degraded_new, ite1 ] = update_patterns( W, P(1,:), ite_lim );
+[ P2_degraded_new, ite2 ] = update_patterns( W, P(2,:), ite_lim );
 
 P1_degraded = reshape(P1_degraded_new,[32 32]);
 P2_degraded = reshape(P2_degraded_new,[32 32]);
