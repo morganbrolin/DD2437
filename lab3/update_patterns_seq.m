@@ -18,8 +18,6 @@ while not(converged) && ite < ite_lim
             sum_of_input = sum_of_input + X_new(:,j_n)*W(j_n,i_n);
             
         end
-        %en=size((X_train(:,i_n)))
-        %tvo = size((X_train(i_n,:)))
         X_new(:,i_n) = (X_new(:,i_n)+ sum_of_input);
         X_new = sign(X_new);
     end
