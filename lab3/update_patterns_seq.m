@@ -20,7 +20,7 @@ while not(converged) && ite < ite_lim
         end
         %en=size((X_train(:,i_n)))
         %tvo = size((X_train(i_n,:)))
-        X_new(:,i_n) = (X_new(:,i_n)+X_new(:,i_n)+ sum_of_input);
+        X_new(:,i_n) = (X_new(:,i_n)+ sum_of_input);
         X_new = sign(X_new);
     end
     converged = isequal(X_new, X);
