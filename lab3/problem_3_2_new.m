@@ -29,29 +29,33 @@ P10 = reshape(P(10,:),[32 32]);
 P11 = reshape(P(11,:),[32 32]);
 
 % Patterns
-patterns = [P(1,:); P(2,:); P(3,:)];
+patterns = [P(1,:); P(2,:); P(3,:); P(4,:)];
 [p, N] = size(patterns);
-ite_lim = 500;
+ite_lim = 50000;
+Xp1 = P(1,:);
+Xp2 = P(2,:);
 
 % Weight calculation
 W = weight_calc(patterns, 0, 0);
 
-[ P1_degraded_new, ite1 ] = update_patterns( W, P(10,:), ite_lim );
-[ P2_degraded_new, ite2 ] = update_patterns( W, P(11,:), ite_lim );
+% Update rule by Morgan
+[ P1_degraded_new, ite1 ] = update_patterns_latest( W, P(10,:), ite_lim );
+[ P2_degraded_new, ite2 ] = update_patterns_latest( W, P(11,:), ite_lim );
+% Update rule by Abhishek
+%[ P1_degraded_new, ite1 ] = update_patterns1( W, P(10,:), Xp1, ite_lim );
+%[ P2_degraded_new, ite2 ] = update_patterns1( W, P(11,:), Xp2, ite_lim );
 
 P1_degraded = reshape(P1_degraded_new,[32 32]);
 P2_degraded = reshape(P2_degraded_new,[32 32]);
 
 figure(1)
-subplot(2,1,1)
 imagesc(P10)
-subplot(2,1,2)
+figure(2)
 imagesc(P1_degraded)
 
-figure(2)
-subplot(2,1,1)
+figure(3)
 imagesc(P11)
-subplot(2,1,2)
+figure(4)
 imagesc(P2_degraded)
 
 
