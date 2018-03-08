@@ -17,7 +17,8 @@ if normalize
 end
 
 if correct_diag
-    W = W - diag(W);
+    N = size(W,1);
+    W(1:N+1:end)=0;
 end
 
 end
