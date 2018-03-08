@@ -1,4 +1,4 @@
-function [ X_out, ite ] = update_patterns( W, X, ite_lim )
+function [ X_out, ite ] = update_patterns_seq( W, X, ite_lim )
 a = size(X);
 P = a(1);
 N = a(2);
