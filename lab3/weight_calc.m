@@ -21,4 +21,3 @@ if correct_diag
 end
 
 end
-
