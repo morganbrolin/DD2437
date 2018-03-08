@@ -48,7 +48,7 @@ X_test = permn([0 1],8);
 X_test_new = zeros(size(X_test));
 
 for i = 1: length(X_test)
-    [~,X_test_new(i,:)] = weight_update_batch(X_test(i,:),ite_lim,W);
+    [~,X_test_new(i,:)] = weight_update_seq(X_test(i,:),ite_lim,W);
     if not(ismember(X_test_new(i,:),attractors,'rows'))
         attractors = [attractors; X_test_new(i,:)];
     end

@@ -6,46 +6,38 @@ a = size(X_train);
 P = a(1);
 N = a(2);
 
-
-Xiold = X;
-
-%RandomW = W;
-
-%Xi = sign(X*W)+ X;
-%Xiold = sign(X*W);
-diference = 1;
+converged = 1;
 
 
 X_out = X;
-Y = X_train;
+X_new = X_train;
 for i = 1: ite_max
-    if diference == 0
+    if converged == 0
         break
     end
-    Y = sign(Y);
+    X_new = sign(X_new);
     for i_n = 1 : N
-        Y = sign(Y);
+        X_new = sign(X_new);
         sum_of_input = 0;
         for j_n = 1 : N
-            sum_of_input = sum_of_input + Y(:,j_n)*W(j_n,i_n);
+            sum_of_input = sum_of_input + X_new(:,j_n)*W(j_n,i_n);
             
         end
         %en=size((X_train(:,i_n)))
         %tvo = size((X_train(i_n,:)))
-        Y(:,i_n) = (Y(:,i_n)+Y(:,i_n)+ sum_of_input);
-        Y = sign(Y);
+        X_new(:,i_n) = (X_new(:,i_n)+X_new(:,i_n)+ sum_of_input);
+        X_new = sign(X_new);
     end
-    X_out = Y;
-    diference = sum(sum(X-Y));
+    X_out = X_new;
+    converged = isequal(X_new, X);
     
     
 
 end
-ite = sum(sum(abs(X-Xiold)')==0);
+ite = sum(sum(abs(X-X_new)')==0);
 
 
 
 
 
 end
-

@@ -10,9 +10,20 @@ x3d=[ 1 1 1 -1 1 1 -1 1];
 
 
 X_train =  [x1;x2;x3];
-%X_test = [x1d;x2d;x3d];
-X_test = X_train;
+X_test = [x2d];
 
 W = initialize_weights(X_train);
-[ite,X_out] = weight_update_batch(X_test, 2,W);
-sum(sum(X_train - X_out)== 0)
+[match,X_out] = weight_update_seq(X_test, 10,W);
+X_out;
+binary_vector = [-1,1];
+for i = 1:8
+random_vector_one(i) = binary_vector(randi(2));
+
+end
+random_vector_one
+W = initialize_weights(X_train);
+[shit,X_out] = weight_update_seq(random_vector_one, 2,W);
+X_out
+sum(sum(X_out-random_vector_one))
+
+

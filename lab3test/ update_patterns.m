@@ -8,7 +8,7 @@ converged = false;
 ite = 0;
 
 while not(converged) && ite < ite_lim
-    X_new = sign(X+X*W);
+    X_new = sign(X*W);
     converged = isequal(X_new, X);
     ite = ite +1;
     X = X_new;
