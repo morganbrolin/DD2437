@@ -10,6 +10,7 @@ for i = 1:P
     [W,activity] = weight_calc_sparse(X_train(1:i,:),0,0);
     [X_new,ite] = update_patterns_sparse( W, X_train(1:i,:), ite_max,bias );
     perchentage_match = sum(sum(abs(X_train(1:i,:)-X_new)')==0);
+    stabel_patterns = i;
     if 1 ~= (perchentage_match/i)
         stabel_patterns = i;
         break

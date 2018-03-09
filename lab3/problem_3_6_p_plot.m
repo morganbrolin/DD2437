@@ -20,19 +20,32 @@ biasoffset = 0.5;
 %bias can only have values -0.49999 to + 0.49999 and then plus 0.5(offset)
 %    0.4 gives 10%  0.45 gives p = 5%   0.49 gives 1%
 ratioArray = [0];
-Iarray = [0]
-for i = 1:9
+Iarray_bias = [0]
+Iarray_activity = [0]
+for i = 1:199
     bias = 0;
-    bias = i*0.1-0.5 + biasoffset;
+    bias = i*0.005-0.5 + biasoffset;
     X_train = sign(sign(rand(300,100)-bias)+1);
     ite_max = 10;
-    [activity,stabel_patterns] = weight_update_seqdata_batch_sparse_p_plot(X_train, ite_max,bias)
+    [activity,stabel_patterns] = weight_update_seqdata_batch_sparse_p_plot(X_train, ite_max,bias);
      ratioArray = [ratioArray stabel_patterns];
-    Iarray = [Iarray i];
+    Iarray_bias = [Iarray_bias bias];
+    Iarray_activity = [Iarray_activity activity];
 end
+
 figure(1)
-plot(Iarray,ratioArray)
+subplot(2,1,1)
+plot(Iarray_bias,ratioArray)
+title('Sparse Patterns 3.6 bias')
+xlabel('Bias') % x-axis label
+ylabel('Iterations to stable pattern') % y-axis label
+subplot(2,1,2)
+plot(Iarray_activity,ratioArray)
+title('Sparse Patterns 3.6 activity')
+xlabel('activity') % x-axis label
+ylabel('Iterations to stable pattern') % y-axis label
 %X_test = [reshape(P10,[1, 1024])];
+
 
 
     
