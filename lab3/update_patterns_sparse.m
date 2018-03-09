@@ -9,7 +9,7 @@ ite = 0;
 
 while not(converged) && ite < ite_lim
     theta = bias;
-    X_new = sign(X+(0.5+X*W-theta));
+    X_new = 0.5+0.5*sign(X+(X*W-theta));
     converged = isequal(X_new, X);
     ite = ite +1;
     X = X_new;
