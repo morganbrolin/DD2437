@@ -1,13 +1,13 @@
-function [activity,stabel_patterns] = weight_update_seqdata_batch_sparse_p_plot(X_train, ite_max,bias)
+function [stabel_patterns] = weight_update_seqdata_batch_sparse_p_plot_wrong(X_train, ite_max,bias,activity)
 
 X  = X_train;
 a = size(X_train);
 P = a(1);
 N = a(2);
-ratioArray = [0];
-Iarray = [0];
+ratioArray = [];
+Iarray = [];
 for i = 1:P 
-    [W,activity] = weight_calc_sparse(X_train(1:i,:),0,0);
+    [W] = weight_calc_sparse_wrong(X_train(1:i,:),0,0,activity);
     [X_new,ite] = update_patterns_sparse( W, X_train(1:i,:), ite_max,bias );
     perchentage_match = sum(sum(abs(X_train(1:i,:)-X_new)')==0);
     stabel_patterns = i;
@@ -19,3 +19,4 @@ for i = 1:P
     Iarray = [Iarray i];
 end
 end
+
