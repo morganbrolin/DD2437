@@ -17,6 +17,18 @@ bintestdata = csvread('bindigit_tst.csv')';
 bintestdata = reshape(bintestdata,28,28,2000);
 bintestdata = num2cell(bintestdata,[1,2]);
 bintestdatatarget = csvread('targetdigit_tst.csv');
+
+target = zeros(8000,10);
+targettest = zeros(2000,10);
+
+for i = 1:8000
+    j = bindatatarget(i)+1;
+    target(i,j) = 1;
+end
+for i = 1:2000
+    j = bintestdatatarget(i)+1;
+    targettest(i,j) = 1;
+end
 %imagesc(p1)
 number_index = 0;
 
@@ -41,7 +53,8 @@ autoenc3 = trainAutoencoder(feat2,20,'MaxEpochs',10, ...
 
 
 feat3 = encode(autoenc3,feat2);
-softnet = trainSoftmaxLayer(feat3,bindatatarget','MaxEpochs',40);
+softnet = trainSoftmaxLayer(feat3,target','MaxEpochs',40);
+
 deepnet = stack(autoenc1,autoenc2,autoenc3,softnet);
 view(deepnet)
 
@@ -62,14 +75,14 @@ end
 
 figure(1)
 y = deepnet(binTest);
-plotconfusion(bintestdatatarget',y);
+plotconfusion(targettest',y);
 title("confusion plot 3 layer autoencoder")
 
-deepnet = train(deepnet,bintrain,bindatatarget');
+deepnet = train(deepnet,bintrain,target');
 
 y = deepnet(binTest);
 figure(2)
-plotconfusion(bintestdatatarget',y);
+plotconfusion(targettest',y);
 title("confusion plot 3 layer autoencoder backproptuned")
 
 %figure(3)
